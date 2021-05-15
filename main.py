@@ -65,5 +65,5 @@ while True:
     for turtle in turtles:
         move_turtle(turtle, speed_factor)
         #player_animate(turtle)
-
+print("done")
 print("done")
