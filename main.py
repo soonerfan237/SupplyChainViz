@@ -3,6 +3,7 @@ import time
 import bigquery
 import random
 import math
+from decimal import Decimal
 
 department_color = {
     1:"green",
@@ -30,7 +31,15 @@ for row in results:
     turtles[turtle].shape("circle")
     turtles[turtle].penup()
     turtles[turtle].speed(0)
-    turtles[turtle].goto(10 - random.randint(-wn.window_width()/2, wn.window_width()/2), random.randint(-wn.window_width()/2, wn.window_width()/2) - 10)
+    turtles[turtle].origin = [row['origin_lon'],row['origin_lat']]
+    turtles[turtle].destination = [row['dest_lon'],row['dest_lat']]
+    print("latitude: " + str(turtles[turtle].origin[1]))
+    print("percent along lat axis??? " + str((turtles[turtle].origin[1]-29)*(turtles[turtle].origin[1]/40)/100))
+    print("spot on window??? " + str(Decimal(-wn.window_width()/2)-wn.window_width()*(turtles[turtle].origin[1]-29)*(turtles[turtle].origin[1]/40)/100))
+
+    turtles[turtle].goto(-wn.window_width()/2-float(wn.window_width()*(turtles[turtle].origin[1]+43)*(turtles[turtle].origin[1]/-110)/100)        , -wn.window_width()/2-float(wn.window_width()*(turtles[turtle].origin[1]-29)*(turtles[turtle].origin[1]/40)/100))
+    #turtles[turtle].goto(10 - random.randint(-wn.window_width()/2, wn.window_width()/2), random.randint(-wn.window_width()/2, wn.window_width()/2) - 10)
+
     turtles[turtle].pendown()
     turtles[turtle].showturtle()
     turtles[turtle].movevector = [.01*(0-turtles[turtle].xcor()),.01*(0-turtles[turtle].ycor())]
@@ -49,21 +58,18 @@ def player_animate(turtle): #moves turtle forward
     turtle.forward(1)
 
 def move_turtle(turtle, speed_factor):
-    print("moving turtle")
+    #print("moving turtle")
     turtle.goto(turtle.xcor() + turtle.movevector[0]*speed_factor, turtle.ycor() + turtle.movevector[1]*speed_factor)
-    distance_moved = math.sqrt(turtle.movevector[0]*speed_factor*turtle.movevector[0]*speed_factor + turtle.movevector[1]*speed_factor*turtle.movevector[1]*speed_factor)
-    print("distance moved: " + str(distance_moved))
 
-for turtle in turtles:
-    turn_turtle(turtle)
+#for turtle in turtles:
+#    turn_turtle(turtle)
 
 speed_factor=1
 while True:
     wn.update()
     speed_factor*=1.1
-    #print("Main Loop")
+    print("Main Loop")
     for turtle in turtles:
         move_turtle(turtle, speed_factor)
-        #player_animate(turtle)
-print("done")
+
 print("done")
