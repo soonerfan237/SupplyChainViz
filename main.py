@@ -50,12 +50,12 @@ for row in results:
     print("origin longitude: " + str(turtles[turtle].origin[0]))
     print("origin latitude: " + str(turtles[turtle].origin[1]))
     origin_window_coords = coordinate_conversion(turtles[turtle].origin, wn.window_width())
-
+    destination_window_coords = coordinate_conversion(turtles[turtle].destination, wn.window_width())
     turtles[turtle].goto(origin_window_coords[0],origin_window_coords[1])
     turtles[turtle].pendown()
     turtles[turtle].showturtle()
 
-    turtles[turtle].movevector = [.01*(0-turtles[turtle].xcor()),.01*(0-turtles[turtle].ycor())]
+    turtles[turtle].movevector = [.01*(destination_window_coords[0]-turtles[turtle].xcor()),.01*(destination_window_coords[1]-turtles[turtle].ycor())]
     turtle+=1
 
 #this part creates the turtle that will represent the destination
