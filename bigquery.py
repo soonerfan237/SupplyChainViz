@@ -10,7 +10,5 @@ def get_turtles():
     query_job = client.query("""SELECT * FROM new_table.new_table LIMIT 1000 """)
 
     results = query_job.result()
-    #for row in query_job.result():
-    #    print(row)
-    #    print("load_id = " + str(row['load_id']))
+
     return results

@@ -25,6 +25,10 @@ def coordinate_conversion(lat_long, window_width):
     window_coords=[xcor,ycor]
     return window_coords
 
+def move_turtle(turtle, speed_factor):
+    #print("moving turtle")
+    turtle.goto(turtle.xcor() + turtle.movevector[0]*speed_factor, turtle.ycor() + turtle.movevector[1]*speed_factor)
+
 wn = turtle.Screen()
 #wn.screensize(40, 40)
 wn.title("Animation Demo")
@@ -43,19 +47,17 @@ for row in results:
     turtles[turtle].color(department_color[row['department']])
     turtles[turtle].shapesize(row['volume']/100, row['volume']/100, row['volume']/100)
     turtles[turtle].shape("circle")
+    turtles[turtle].pensize(2)
     turtles[turtle].penup()
     turtles[turtle].speed(0)
     turtles[turtle].origin = [row['origin_lon'],row['origin_lat']]
     turtles[turtle].destination = [row['dest_lon'],row['dest_lat']]
-    print("origin longitude: " + str(turtles[turtle].origin[0]))
-    print("origin latitude: " + str(turtles[turtle].origin[1]))
     origin_window_coords = coordinate_conversion(turtles[turtle].origin, wn.window_width())
     destination_window_coords = coordinate_conversion(turtles[turtle].destination, wn.window_width())
     turtles[turtle].goto(origin_window_coords[0],origin_window_coords[1])
+    turtles[turtle].movevector = [.01*(destination_window_coords[0]-turtles[turtle].xcor()),.01*(destination_window_coords[1]-turtles[turtle].ycor())]
     turtles[turtle].pendown()
     turtles[turtle].showturtle()
-
-    turtles[turtle].movevector = [.01*(destination_window_coords[0]-turtles[turtle].xcor()),.01*(destination_window_coords[1]-turtles[turtle].ycor())]
     turtle+=1
 
 #this part creates the turtle that will represent the destination
@@ -69,35 +71,22 @@ print("DC longitude: " + str(turtles[turtle].destination[0]))
 print("DC latitude: " + str(turtles[turtle].destination[1]))
 dc_window_coords = coordinate_conversion(turtles[turtle].destination, wn.window_width())
 turtles[turtle].goto(dc_window_coords[0],dc_window_coords[1])
+turtles[turtle].movevector = [0,0] #the dc turtle won't move
 turtles[turtle].pendown()
 turtles[turtle].showturtle()
-turtles[turtle].movevector = [0,0] #the dc turtle won't move
 
-def turn_turtle(turtle): #turns turtle toward the center of screen
-    print("turning turtle")
-    print(turtle.pos())
-    if turtle.pos()[0] < 0:
-        turtle.left(math.degrees(math.atan(-turtle.pos()[1]/-turtle.pos()[0])))
-    else:
-        turtle.right(180-math.degrees(math.atan(turtle.pos()[1]/turtle.pos()[0])))
-
-def player_animate(turtle): #moves turtle forward
-    time.sleep(0.001)
-    turtle.forward(1)
-
-def move_turtle(turtle, speed_factor):
-    #print("moving turtle")
-    turtle.goto(turtle.xcor() + turtle.movevector[0]*speed_factor, turtle.ycor() + turtle.movevector[1]*speed_factor)
-
-#for turtle in turtles:
-#    turn_turtle(turtle)
-
-speed_factor=1
+speed_factor=1.1
+in_transit=True
+moves=0
 while True:
     wn.update()
-    speed_factor*=1.1
+
     print("Main Loop")
-    for turtle in turtles:
-        move_turtle(turtle, speed_factor)
+    if moves < 23:
+        speed_factor*=1.1
+        for turtle in turtles:
+            move_turtle(turtle, speed_factor)
+    moves+=1
+
 
 print("done")
