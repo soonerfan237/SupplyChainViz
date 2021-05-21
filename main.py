@@ -30,13 +30,11 @@ def move_turtle(turtle, speed_factor):
     turtle.goto(turtle.xcor() + turtle.movevector[0]*speed_factor, turtle.ycor() + turtle.movevector[1]*speed_factor)
 
 wn = turtle.Screen()
-#wn.screensize(40, 40)
 wn.title("Animation Demo")
 wn.bgcolor("white")
 wn.register_shape('warehouse.gif')
 wn.bgpic('usa_map.gif')
 wn.update()
-
 print("window width: " + str(wn.window_width()))
 
 results = bigquery.get_turtles()
@@ -87,6 +85,5 @@ while True:
         for turtle in turtles:
             move_turtle(turtle, speed_factor)
     moves+=1
-
 
 print("done")
