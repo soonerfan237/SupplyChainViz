@@ -12,6 +12,19 @@ department_color = {
     4:"red"
 }
 
+def coordinate_conversion(lat_long, window_width):
+    #longitude is range 73 to 122 (49 difference)
+    #longitude is x coords (left and right)
+    longitude = float(lat_long[0])
+    xcor = ((longitude-73)/49*-window_width)+(window_width/2)
+    #latitude is range 29-40 (11 difference)
+    #latitude is y coords (up and down)
+    latitude = float(lat_long[1])
+    ycor = ((latitude-29)/11*window_width)-(window_width/2)
+
+    window_coords=[xcor,ycor]
+    return window_coords
+
 wn = turtle.Screen()
 #wn.screensize(40, 40)
 wn.title("Animation Demo")
@@ -20,7 +33,7 @@ wn.register_shape("truck_smaller.gif")
 wn.bgpic('usa_map.gif')
 wn.update()
 
-print(wn.window_width())
+print("window width: " + str(wn.window_width()))
 
 results = bigquery.get_turtles()
 turtles = [turtle.Turtle(visible=False) for _ in range(results.total_rows)]
@@ -33,17 +46,19 @@ for row in results:
     turtles[turtle].speed(0)
     turtles[turtle].origin = [row['origin_lon'],row['origin_lat']]
     turtles[turtle].destination = [row['dest_lon'],row['dest_lat']]
-    print("latitude: " + str(turtles[turtle].origin[1]))
-    print("percent along lat axis??? " + str((turtles[turtle].origin[1]-29)*(turtles[turtle].origin[1]/40)/100))
-    print("spot on window??? " + str(Decimal(-wn.window_width()/2)-wn.window_width()*(turtles[turtle].origin[1]-29)*(turtles[turtle].origin[1]/40)/100))
+    print("origin longitude: " + str(turtles[turtle].origin[0]))
+    print("origin latitude: " + str(turtles[turtle].origin[1]))
+    window_coords = coordinate_conversion(turtles[turtle].origin, wn.window_width())
 
-    turtles[turtle].goto(-wn.window_width()/2-float(wn.window_width()*(turtles[turtle].origin[1]+43)*(turtles[turtle].origin[1]/-110)/100)        , -wn.window_width()/2-float(wn.window_width()*(turtles[turtle].origin[1]-29)*(turtles[turtle].origin[1]/40)/100))
+    turtles[turtle].goto(window_coords[0],window_coords[1])
     #turtles[turtle].goto(10 - random.randint(-wn.window_width()/2, wn.window_width()/2), random.randint(-wn.window_width()/2, wn.window_width()/2) - 10)
 
     turtles[turtle].pendown()
     turtles[turtle].showturtle()
     turtles[turtle].movevector = [.01*(0-turtles[turtle].xcor()),.01*(0-turtles[turtle].ycor())]
     turtle+=1
+
+
 
 def turn_turtle(turtle): #turns turtle toward the center of screen
     print("turning turtle")
